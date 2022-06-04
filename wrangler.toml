@@ -1,0 +1,59 @@
+name = "tfstate-edge"
+
+account_id = ""
+workers_dev = true
+
+compatibility_date = "2022-06-03"
+
+main = "src/index.ts"
+
+kv_namespaces = [
+  { binding = "KEYS", id = "", preview_id = "460692ffa0b54459964c82fd13097500"}
+]
+
+durable_objects.bindings = [
+  { name = "STATES", class_name = "States" }
+]
+
+r2_buckets = [
+  { binding = "STATES_BUCKET", bucket_name = "", preview_bucket_name = "states-preview"}
+]
+
+[vars]
+
+
+[env.staging]
+account_id = ""
+durable_objects.bindings = [
+  { name = "STATES", class_name = "States" }
+]
+
+kv_namespaces = [
+  { binding = "KEYS", id = ""}
+]
+
+r2_buckets = [
+  { binding = "STATES_BUCKET", bucket_name = ""}
+]
+
+[env.staging.vars]
+
+[env.production]
+account_id = ""
+durable_objects.bindings = [
+  { name = "STATES", class_name = "States" }
+]
+
+kv_namespaces = [
+  { binding = "KEYS", id = "96a37c089da7403cbc20193e361d3f89"}
+]
+
+r2_buckets = [
+  { binding = "STATES_BUCKET", bucket_name = "states", preview_bucket_name = "states-preview"}
+]
+[env.production.vars]
+
+
+[[migrations]]
+tag = "v1"
+new_classes = ["States"]
