@@ -37,3 +37,4 @@ $ yarn update-interactive
 
 ### TODO
 - [ ] fix tests when Miniflare supports R2
+- [ ] project scoped permissions
