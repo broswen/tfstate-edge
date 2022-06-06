@@ -3,13 +3,22 @@ export interface BasicAuth {
     password: string
 }
 
+export interface Permissions {
+    username: string
+    password: string
+    projects: string[]
+}
+
 //validate a username and password exist and match in the KEYS KV Namespace
-export async function authenticate(auth: BasicAuth, KEYS: KVNamespace): Promise<boolean> {
-    const resp = await KEYS.get(auth.username)
-    if (resp === null) {
+export async function authenticate(auth: BasicAuth, project: string, KEYS: KVNamespace): Promise<boolean> {
+    const perms = await KEYS.get<Permissions>(auth.username, 'json')
+    if (perms === null) {
         return false
     }
-    return auth.password === resp
+    if (!perms.projects.includes(project)) {
+        return false
+    }
+    return perms.password === auth.password
 }
 
 //parses Basic Auth header into BasicAuth object

@@ -14,6 +14,7 @@ const STATES = 'states'
 
 export async function handleRequest(request: Request, env: Env) {
   const url = new URL(request.url)
+  const key = url.pathname.slice(1)
 
   //check for Authorization header
   const auth = request.headers.get('Authorization')
@@ -29,7 +30,7 @@ export async function handleRequest(request: Request, env: Env) {
   }
 
   //authenticate Basic Authorization credentials
-  const valid = await authenticate(creds, env.KEYS)
+  const valid = await authenticate(creds, key, env.KEYS)
   if (!valid && env.ENVIRONMENT !== 'dev') {
     return new Response('not authorized', {status: 401})
   }

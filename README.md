@@ -8,7 +8,16 @@ This project is a fully serverless [Terraform HTTP Backend](https://www.terrafor
 ### Usage
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/broswen/tfstate-edge)
 
-_Note: You must manually create the username and password in the KV Namespace._
+Manually create a user by adding a JSON document in the KVNamespace bound to `KEYS`. The key is the username and the value is a JSON document describing the user information.
+```json
+{
+  "username": "username",
+  "password": "password",
+  "projects": ["project-name"]
+}
+```
+
+Configure Terraform to use an HTTP backend with the configured username and password. The backend address is the worker hostname with the project name as the path.
 ```hcl
 terraform {
   backend "http" {
@@ -21,6 +30,7 @@ terraform {
 }
 ```
 
+### Development
 
 ```shell
 # Install dependencies
@@ -37,4 +47,4 @@ $ yarn update-interactive
 
 ### TODO
 - [ ] fix tests when Miniflare supports R2
-- [ ] project scoped permissions
+- [x] project scoped permissions
