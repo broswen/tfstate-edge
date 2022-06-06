@@ -12,9 +12,9 @@ _Note: You must manually create the username and password in the KV Namespace._
 ```hcl
 terraform {
   backend "http" {
-    address = "http://my-subdomain.workers.dev/project-name"
-    lock_address = "http://my-subdomain.workers.dev/project-name"
-    unlock_address = "http://my-subdomain.workers.dev/project-name"
+    address = "https://my-subdomain.workers.dev/project-name"
+    lock_address = "https://my-subdomain.workers.dev/project-name"
+    unlock_address = "https://my-subdomain.workers.dev/project-name"
     username = "username"
     password = "password"
   }

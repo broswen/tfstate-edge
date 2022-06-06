@@ -20,7 +20,7 @@ r2_buckets = [
 ]
 
 [vars]
-
+ENVIRONMENT = "dev"
 
 [env.staging]
 account_id = ""
@@ -37,6 +37,7 @@ r2_buckets = [
 ]
 
 [env.staging.vars]
+ENVIRONMENT = "staging"
 
 [env.production]
 account_id = ""
@@ -52,6 +53,7 @@ r2_buckets = [
   { binding = "STATES_BUCKET", bucket_name = "states", preview_bucket_name = "states-preview"}
 ]
 [env.production.vars]
+ENVIRONMENT = "production"
 
 
 [[migrations]]

@@ -7,6 +7,7 @@ export type Env = {
   STATES: DurableObjectNamespace
   KEYS: KVNamespace
   STATES_BUCKET: R2Bucket
+  ENVIRONMENT: string
 }
 
 const STATES = 'states'
@@ -29,7 +30,7 @@ export async function handleRequest(request: Request, env: Env) {
 
   //authenticate Basic Authorization credentials
   const valid = await authenticate(creds, env.KEYS)
-  if (!valid) {
+  if (!valid && env.ENVIRONMENT !== 'dev') {
     return new Response('not authorized', {status: 401})
   }
 

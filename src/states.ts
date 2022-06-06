@@ -1,5 +1,15 @@
 import {Env} from "@/index";
 
+export interface StateLock {
+  ID: string
+  Operation: string
+  Info: string
+  Who: string
+  Version: string
+  Created: string
+  Path: string
+}
+
 export class States implements DurableObject {
   env: Env
   constructor(private readonly state: DurableObjectState, private readonly env: Env) {
@@ -23,7 +33,16 @@ export class States implements DurableObject {
         return new Response(object.body)
         break
       case 'POST':
-        //save state to R2, does not check lock
+        if (lock !== undefined) {
+          //check query parameter ID matches existing lock ID
+          const lockData: StateLock = JSON.parse(lock) as StateLock
+          const lockID = url.searchParams.get('ID')
+          if (lockData.ID !== lockID) {
+            //lock IDs don't match
+            return new Response('lock mismatch', {status: 400})
+          }
+        }
+        //save state to R2
         await this.env.STATES_BUCKET.put(key, request.body)
         return new Response('ok')
         break
