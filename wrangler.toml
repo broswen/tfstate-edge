@@ -12,12 +12,12 @@ custom_domain = true
 ENVIRONMENT = "production"
 
 [[durable_objects.bindings]]
-name = "LOCK"
-class_name = "Lock"
+name = "PROJECT"
+class_name = "Project"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["Lock"]
+new_classes = ["Project"]
 
 [[kv_namespaces]]
 binding = "USERS"

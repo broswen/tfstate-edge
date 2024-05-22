@@ -1,16 +1,16 @@
 import { DurableObject } from "cloudflare:workers";
-import { LockState } from './lock';
+import { LockState } from './project';
 import { authenticate, BasicAuth, parseBasicAuth } from './authentication';
-export { Lock } from "./lock";
+export { Project } from "./project";
 
 
 export default {
 	fetch: async function(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const method = request.method;
 		const url = new URL(request.url);
-		const project = url.pathname.slice(1);
+		const projectName = url.pathname.slice(1);
 
-		if (project === "") {
+		if (projectName === "") {
 			return new Response("project name not specified", {status: 400})
 		}
 
@@ -25,17 +25,13 @@ export default {
 			return new Response("failed to parse basic auth", {status: 401})
 		}
 
-		const authorized = await authenticate(creds, project, env.USERS);
-		if (!authorized) {
+		const authResult = await authenticate(creds, projectName, env);
+		if (!authResult.authorized) {
 			return new Response("not authorized", {status: 403})
 		}
 
-		const objectId = env.LOCK.idFromName(project);
-		const stub = env.LOCK.get(objectId);
-
-
 		if (method === "GET") {
-			let state = await env.STATES.get(project)
+			let state = await authResult.project.get();
 			if (state) {
 				return new Response(state.body);
 			}
@@ -43,19 +39,19 @@ export default {
 		}
 
 		if (method === "POST") {
-			let lock = await stub.getLock();
+			let lock = await authResult.project.getLock();
 			const lockId = url.searchParams.get("ID");
 			if (lock && lock.ID !== lockId) {
 				return new Response("lock mismatch", {status: 400});
 			}
 
-			await env.STATES.put(project, request.body);
+			await authResult.project.put(request.body);
 			return new Response("ok");
 		}
 
 		if (method === "LOCK") {
 			const lockState = await request.json<LockState>();
-			let lock = await stub.lock(lockState);
+			let lock = await authResult.project.lock(lockState);
 			if (lock) {
 				return new Response(JSON.stringify(lock), {status: 423});
 			}
@@ -63,13 +59,12 @@ export default {
 		}
 
 		if (method === "UNLOCK") {
-			await stub.unlock()
+			await authResult.project.unlock();
 			return new Response("ok");
 		}
 
 		if (method === "DELETE") {
-			await stub.unlock()
-			await env.STATES.delete(project);
+			await authResult.project.delete()
 			return new Response("ok");
 		}
 

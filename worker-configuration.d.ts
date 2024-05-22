@@ -4,6 +4,6 @@
 interface Env {
 	USERS: KVNamespace;
 	ENVIRONMENT: string;
-	LOCK: DurableObjectNamespace<Lock>;
+	PROJECT: DurableObjectNamespace<Project>;
 	STATES: R2Bucket;
 }

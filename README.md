@@ -41,3 +41,7 @@ $ npm start
 
 ### TODO
 - [ ] fix tests when Miniflare supports R2
+- [x] used capability based security
+  - return lock stub only if user authorized for the project
+  - move R2 actions inside of lock stub
+  - rename Lock class to Project
