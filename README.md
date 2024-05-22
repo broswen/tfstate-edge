@@ -3,12 +3,12 @@
 This project is a fully serverless [Terraform HTTP Backend](https://www.terraform.io/language/settings/backends/http) created with Cloudflare Workers, KV, Durable Objects, and R2.
 
 
-![diagram](./tfstate-edge.drawio.png)
+![diagram](./tfstate-edge.png)
 
 ### Usage
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/broswen/tfstate-edge)
 
-Manually create a user by adding a JSON document in the KVNamespace bound to `KEYS`. The key is the username and the value is a JSON document describing the user information.
+Manually create a user by adding a JSON document in the KVNamespace bound to `KEYS`. The key is the username and the value is a JSON document describing the user information and the names of the projects it has access to.
 ```json
 {
   "username": "username",
@@ -34,17 +34,10 @@ terraform {
 
 ```shell
 # Install dependencies
-$ yarn install
+$ npm install
 # Start local development server with live reload
-$ yarn dev
-# Run tests
-$ yarn test
-# Run code linting
-$ yarn lint
-# Update packages
-$ yarn update-interactive
+$ npm start
 ```
 
 ### TODO
 - [ ] fix tests when Miniflare supports R2
-- [x] project scoped permissions
