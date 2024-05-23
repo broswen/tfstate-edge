@@ -6,4 +6,5 @@ interface Env {
 	ENVIRONMENT: string;
 	PROJECT: DurableObjectNamespace<Project>;
 	STATES: R2Bucket;
+	ANALYTICS: AnalyticsEngineDataset;
 }

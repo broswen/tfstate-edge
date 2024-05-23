@@ -28,3 +28,7 @@ id = "1ac1307371a84b1abc744b9581ee9f9e"
 binding = "STATES"
 # TODO replace with your R2 bucket
 bucket_name = "tfstate-edge-states"
+
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "tfstate-edge"

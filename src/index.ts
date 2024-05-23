@@ -10,6 +10,12 @@ export default {
 		const url = new URL(request.url);
 		const projectName = url.pathname.slice(1);
 
+		env.ANALYTICS.writeDataPoint({
+			blobs: [method, projectName, request.headers.get("User-Agent")],
+			doubles: [],
+			indexes: [projectName]
+		});
+
 		if (projectName === "") {
 			return new Response("project name not specified", {status: 400})
 		}
