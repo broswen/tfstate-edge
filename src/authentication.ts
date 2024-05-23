@@ -37,8 +37,7 @@ export async function authenticate(auth: BasicAuth, project: string, env: Env): 
 			return {authorized: false, project: undefined};
 		}
 
-		const objectId = env.PROJECT.idFromName(project);
-		const stub = new ProjectWrapper(project, env.PROJECT.get(objectId));
+		const stub = new ProjectWrapper(project, env);
 		return {
 			authorized: true,
 			project: stub

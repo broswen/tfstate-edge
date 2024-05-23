@@ -16,10 +16,13 @@ export interface LockState {
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 export class ProjectWrapper {
 	projectName: string;
+	env: Env;
 	stub: DurableObjectStub<Project>;
-	constructor(projectName: string, stub: DurableObjectStub<Project>) {
+	constructor(projectName: string, env: Env) {
 		this.projectName = projectName;
-		this.stub = stub;
+		this.env = env;
+		const objectId = env.PROJECT.idFromName(this.projectName);
+		this.stub = env.PROJECT.get(objectId);
 	}
 
 	async lock(newLock: LockState): Promise<LockState | undefined> {
@@ -35,15 +38,16 @@ export class ProjectWrapper {
 	}
 
 	async get(): Promise<R2ObjectBody | null> {
-		return this.stub.get(this.projectName);
+		return this.env.STATES.get(this.projectName)
 	}
 
 	async put(data: ReadableStream | null): Promise<R2Object | null> {
-		return this.stub.put(this.projectName, data);
+		return this.env.STATES.put(this.projectName, data);
 	}
 
 	async delete(): Promise<void> {
-		return this.stub.delete(this.projectName);
+		await this.env.STATES.delete(this.projectName);
+		return this.stub.unlock();
 	}
 }
 
@@ -74,18 +78,5 @@ export class Project extends DurableObject {
 	// unlock deletes any existing lock
 	async unlock(): Promise<void> {
 		await this.ctx.storage.delete(LOCK_KEY);
-	}
-
-	async get(projectName: string): Promise<R2ObjectBody | null> {
-		return this.env.STATES.get(projectName)
-	}
-
-	async put(projectName: string, data: ReadableStream | null): Promise<R2Object | null> {
-		return this.env.STATES.put(projectName, data);
-	}
-
-	async delete(projectName: string): Promise<void> {
-		await this.unlock();
-		await this.env.STATES.delete(projectName);
 	}
 }
